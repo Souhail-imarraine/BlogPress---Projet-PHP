@@ -1,18 +1,70 @@
+<?php
+require 'connection.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Document</title>
+    <title>login</title>
 </head>
 
 <body>
+    <header>
+        <nav class="bg-white border-gray-200 dark:bg-gray-900">
+            <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+                <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BlogPress</span>
+                </a>
+                <button data-collapse-toggle="navbar-default" type="button"
+                    class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    aria-controls="navbar-default" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 17 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M1 1h15M1 7h15M1 13h15" />
+                    </svg>
+                </button>
+                <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+                    <ul
+                        class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                        <li>
+                            <a href="index.php"
+                                class="block py-2 px-3 text-white rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                                aria-current="page">Home</a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Article</a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
+                        </li>
+
+                        <li>
+                            <a href="login.php"
+                                class="no-underline text-white hover:text-amber-600 transition duration-200">Sign in</a>
+                        </li>
+                        <li>
+                            <a href="signup.php"
+                                class="bg-white text-black hover:bg-white transition duration-200 py-2 px-4 rounded">Sign
+                                up</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
     <div class="font-[sans-serif] bg-white md:h-screen">
         <div class="grid md:grid-cols-2 items-center gap-8 h-full">
             <div class="max-md:order-1 p-4">
-                <img src="https://readymadeui.com/signin-image.webp" class="lg:max-w-[85%] w-full h-full object-contain block mx-auto" alt="login-image" />
+                <img src="https://readymadeui.com/signin-image.webp"
+                    class="lg:max-w-[85%] w-full h-full object-contain block mx-auto" alt="login-image" />
             </div>
 
             <div class="flex items-center md:p-8 p-6 bg-[#0C172C] h-full lg:w-11/12 lg:ml-auto">
@@ -21,21 +73,6 @@
                         <h3 class="text-3xl font-bold text-yellow-400">Create an account</h3>
                     </div>
 
-                    <div>
-                        <label class="text-white text-xs block mb-2">Full Name</label>
-                        <div class="relative flex items-center">
-                            <input name="name" type="text" required
-                                class="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
-                                placeholder="Enter name" />
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
-                                class="w-[18px] h-[18px] absolute right-2" viewBox="0 0 24 24">
-                                <circle cx="10" cy="7" r="6" data-original="#000000"></circle>
-                                <path
-                                    d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
-                                    data-original="#000000"></path>
-                            </svg>
-                        </div>
-                    </div>
                     <div class="mt-8">
                         <label class="text-white text-xs block mb-2">Email</label>
                         <div class="relative flex items-center">
@@ -75,20 +112,13 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center mt-8">
-                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 rounded" />
-                        <label for="remember-me" class="text-white ml-3 block text-sm">
-                            I accept the <a href="javascript:void(0);"
-                                class="text-yellow-500 font-semibold hover:underline ml-1">Terms and Conditions</a>
-                        </label>
-                    </div>
-
                     <div class="mt-12">
                         <button type="button"
                             class="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-transparent bg-yellow-400 hover:bg-yellow-500 focus:outline-none">
                             Register
                         </button>
-                        <p class="text-sm text-white mt-8">Already have an account? <a href="login.php" class="text-yellow-400 font-semibold hover:underline ml-1">Login here</a></p>
+                        <p class="text-sm text-white mt-8">Create New account? <a href="signup.php"
+                                class="text-yellow-400 font-semibold hover:underline ml-1">sign up</a></p>
                     </div>
                 </form>
             </div>
