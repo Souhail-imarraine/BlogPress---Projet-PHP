@@ -1,3 +1,71 @@
+<?php
+require_once 'connection.php';
+
+// stock les errors
+$errors = [];
+
+if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
+    $username = htmlspecialchars(trim($_POST["name"]));
+    $email = htmlspecialchars(trim($_POST["email"]));
+    $password = htmlspecialchars(trim($_POST["password"]));
+    $role = htmlspecialchars($_POST['role']);
+
+    if(empty($username)){
+        $errors['username'] = "username is required";
+    }
+
+    if(empty($email)){
+        $errors['email'] = "email is required";
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['invalid_email'] = "Invalid email format";
+    }
+
+    if(empty($password)){
+        $errors['password'] = "password is required";
+    }
+   
+
+    if(empty($errors)){
+
+        //hash password
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+        $query = "INSERT INTO users (username,email,password,role) VALUES (:username,:email,:password,:role);";
+        $stmt = $pdo->prepare($query);
+
+
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":password", $passwordHash);
+        $stmt->bindParam(":role", $role);
+
+        $stmt->execute();
+
+        // $stmt->execute([$username, $email, $passwordHash, $role]);
+
+        if($role === 'author'){
+            header('location: authors/index.php');
+        }else {
+            header('location: index.php');
+        }
+
+        $pdo = null;
+        $stmt = null;
+
+        exit();
+    }
+
+
+
+
+
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -64,9 +132,21 @@
             </div>
 
             <div class="flex items-center md:p-8 p-6 bg-[#0C172C] h-full lg:w-11/12 lg:ml-auto">
-                <form class="max-w-lg w-full mx-auto">
+                <form action="signup.php" method="post" class="max-w-lg w-full mx-auto">
                     <div class="mb-12">
                         <h3 class="text-3xl font-bold text-yellow-400">Create an account</h3>
+                    </div>
+
+                    <div role="alert" class="mb-4 relative flex w-full p-3 text-sm text-white bg-red-600 rounded-md">
+                        An red alert for showing message.
+                        <button
+                            class="flex items-center justify-center transition-all w-8 h-8 rounded-md text-white hover:bg-white/10 active:bg-white/10 absolute top-1.5 right-1.5"
+                            type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="h-5 w-5" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
                     </div>
 
                     <div>
@@ -108,6 +188,16 @@
                             </svg>
                         </div>
                     </div>
+
+                    <div class="mt-4">
+                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                        <select name="role"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 p-2">
+                            <option value="author">author</option>
+                            <option value="visitor">visitor</option>
+                        </select>
+                    </div>
+
                     <div class="mt-8">
                         <label class="text-white text-xs block mb-2">Password</label>
                         <div class="relative flex items-center">
@@ -123,19 +213,10 @@
                         </div>
                     </div>
 
-                    <!-- <div class="flex items-center mt-8">
-                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 rounded" />
-                        <label for="remember-me" class="text-white ml-3 block text-sm">
-                            I accept the <a href="javascript:void(0);"
-                                class="text-yellow-500 font-semibold hover:underline ml-1">Terms and Conditions</a>
-                        </label>
-                    </div> -->
-
                     <div class="mt-12">
-                        <button type="button"
-                            class="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-transparent bg-yellow-400 hover:bg-yellow-500 focus:outline-none">
-                            Register
-                        </button>
+                        <button type="submit"
+                            class="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-transparent bg-yellow-400 hover:bg-yellow-500 focus:outline-none"
+                            name="btn_signup"> Register </button>
                         <p class="text-sm text-white mt-8">Already have an account? <a href="login.php"
                                 class="text-yellow-400 font-semibold hover:underline ml-1">Login here</a></p>
                     </div>
@@ -143,6 +224,8 @@
             </div>
         </div>
     </div>
+
+    <script src="js/main.js"></script>
 </body>
 
 </html>
