@@ -1,7 +1,5 @@
 <?php
 
-$name = 'souhail'
-
 ?>
 
 <!DOCTYPE html>
@@ -54,8 +52,7 @@ $name = 'souhail'
                         </li>
                         <li>
                             <a href="signup.php"
-                                class="bg-white text-black hover:bg-white transition duration-200 py-2 px-4 rounded">Sign
-                                up</a>
+                                class="bg-white text-black hover:bg-white transition duration-200 py-2 px-4 rounded">Sign up</a>
                         </li>
                     </ul>
                 </div>

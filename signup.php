@@ -5,10 +5,10 @@ require_once 'connection.php';
 $errors = [];
 
 if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
-    $username = htmlspecialchars(trim($_POST["name"]));
+    $username = htmlspecialchars(trim($_POST["Fullname"]));
     $email = htmlspecialchars(trim($_POST["email"]));
     $password = htmlspecialchars(trim($_POST["password"]));
-    $role = htmlspecialchars($_POST['role']);
+    $role = htmlspecialchars($_POST['rolee']);
 
     if(empty($username)){
         $errors['username'] = "username is required";
@@ -53,14 +53,8 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
 
         $pdo = null;
         $stmt = null;
-
         exit();
     }
-
-
-
-
-
 }
 
 ?>
@@ -75,7 +69,6 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Document</title>
 </head>
-
 <body>
     <header>
         <nav class="bg-white border-gray-200 dark:bg-gray-900">
@@ -136,12 +129,12 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
                     <div class="mb-12">
                         <h3 class="text-3xl font-bold text-yellow-400">Create an account</h3>
                     </div>
-
-                    <div role="alert" class="mb-4 relative flex w-full p-3 text-sm text-white bg-red-600 rounded-md">
+                    
+                    <div role="alert" class="mb-4 relative flex w-full p-3 text-sm text-white bg-red-600 rounded-md alertred">
                         An red alert for showing message.
                         <button
                             class="flex items-center justify-center transition-all w-8 h-8 rounded-md text-white hover:bg-white/10 active:bg-white/10 absolute top-1.5 right-1.5"
-                            type="button">
+                            type="button" id="alert">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor" class="h-5 w-5" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
@@ -152,7 +145,7 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
                     <div>
                         <label class="text-white text-xs block mb-2">Full Name</label>
                         <div class="relative flex items-center">
-                            <input name="name" type="text" required
+                            <input name="Fullname" type="text"
                                 class="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
                                 placeholder="Enter name" />
                             <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
@@ -167,7 +160,7 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
                     <div class="mt-8">
                         <label class="text-white text-xs block mb-2">Email</label>
                         <div class="relative flex items-center">
-                            <input name="email" type="text" required
+                            <input name="email" type="text"
                                 class="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
                                 placeholder="Enter email" />
                             <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
@@ -191,7 +184,7 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
 
                     <div class="mt-4">
                         <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                        <select name="role"
+                        <select name="rolee"
                             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 p-2">
                             <option value="author">author</option>
                             <option value="visitor">visitor</option>
@@ -201,7 +194,7 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
                     <div class="mt-8">
                         <label class="text-white text-xs block mb-2">Password</label>
                         <div class="relative flex items-center">
-                            <input name="password" type="password" required
+                            <input name="password" type="password"
                                 class="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
                                 placeholder="Enter password" />
                             <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
@@ -217,15 +210,14 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
                         <button type="submit"
                             class="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-transparent bg-yellow-400 hover:bg-yellow-500 focus:outline-none"
                             name="btn_signup"> Register </button>
-                        <p class="text-sm text-white mt-8">Already have an account? <a href="login.php"
-                                class="text-yellow-400 font-semibold hover:underline ml-1">Login here</a></p>
+                        <p class="text-sm text-white mt-8">Already have an account? <a href="login.php" class="text-yellow-400 font-semibold hover:underline ml-1">Login here</a></p>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <script src="js/main.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>
