@@ -1,62 +1,64 @@
 <?php
 require_once 'connection.php';
 
-// stock les errors
+if (isset($_SESSION['logged_in'])) {
+    header('location: index.php');
+}
+
+// Stock les erreurs
 $errors = [];
 
-if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
-    $username = htmlspecialchars(trim($_POST["Fullname"]));
+if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
+    $username = htmlspecialchars(trim($_POST["username"]));
     $email = htmlspecialchars(trim($_POST["email"]));
     $password = htmlspecialchars(trim($_POST["password"]));
-    $role = htmlspecialchars($_POST['rolee']);
 
-    if(empty($username)){
-        $errors['username'] = "username is required";
+
+    if (empty($username) || empty($email) || empty($password)) {
+        array_push($errors, "All field is required");
     }
 
-    if(empty($email)){
-        $errors['email'] = "email is required";
+    if($email){
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            array_push($errors, "Invalid email format");
+        }
+    }
+    
+
+    //cheak email if already exist ;
+    if (!count($errors)) {
+        $query = "SELECT id, email FROM users WHERE email = ? LIMIT 1";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$email]);
+        $userExists = $stmt->fetch();
+
+        if ($userExists) {
+            array_push($errors, "Email already registered");
+        }
     }
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['invalid_email'] = "Invalid email format";
-    }
-
-    if(empty($password)){
-        $errors['password'] = "password is required";
-    }
-   
-
-    if(empty($errors)){
-
-        //hash password
+    if (empty($errors)) {
+        // Hash password
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO users (username,email,password,role) VALUES (:username,:email,:password,:role);";
+        $query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
         $stmt = $pdo->prepare($query);
 
+        $stmt->execute([$username, $email, $passwordHash]);
 
-        $stmt->bindParam(":username", $username);
-        $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":password", $passwordHash);
-        $stmt->bindParam(":role", $role);
+        // Start session
+        $_SESSION['logged_in'] = true;
+        $_SESSION['user_name'] = $username;
+        $_SESSION['success_message'] = "Welcome back, $username";
+        // print_r($_SESSION['logged_in']);
 
-        $stmt->execute();
-
-        // $stmt->execute([$username, $email, $passwordHash, $role]);
-
-        if($role === 'author'){
-            header('location: authors/index.php');
-        }else {
-            header('location: index.php');
-        }
+        header('location: authors/index.php');
 
         $pdo = null;
         $stmt = null;
         exit();
     }
 }
-
 ?>
 
 
@@ -69,6 +71,7 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Document</title>
 </head>
+
 <body>
     <header>
         <nav class="bg-white border-gray-200 dark:bg-gray-900">
@@ -129,23 +132,13 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
                     <div class="mb-12">
                         <h3 class="text-3xl font-bold text-yellow-400">Create an account</h3>
                     </div>
-                    
-                    <div role="alert" class="mb-4 relative flex w-full p-3 text-sm text-white bg-red-600 rounded-md alertred">
-                        An red alert for showing message.
-                        <button
-                            class="flex items-center justify-center transition-all w-8 h-8 rounded-md text-white hover:bg-white/10 active:bg-white/10 absolute top-1.5 right-1.5"
-                            type="button" id="alert">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" class="h-5 w-5" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
+
+                    <?php include 'errors.php'; ?>
 
                     <div>
                         <label class="text-white text-xs block mb-2">Full Name</label>
                         <div class="relative flex items-center">
-                            <input name="Fullname" type="text"
+                            <input name="username" type="text"
                                 class="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
                                 placeholder="Enter name" />
                             <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
@@ -182,14 +175,14 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
                         </div>
                     </div>
 
-                    <div class="mt-4">
+                    <!-- <div class="mt-4">
                         <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
                         <select name="rolee"
                             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900 p-2">
                             <option value="author">author</option>
                             <option value="visitor">visitor</option>
                         </select>
-                    </div>
+                    </div> -->
 
                     <div class="mt-8">
                         <label class="text-white text-xs block mb-2">Password</label>
@@ -210,7 +203,8 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])){
                         <button type="submit"
                             class="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-transparent bg-yellow-400 hover:bg-yellow-500 focus:outline-none"
                             name="btn_signup"> Register </button>
-                        <p class="text-sm text-white mt-8">Already have an account? <a href="login.php" class="text-yellow-400 font-semibold hover:underline ml-1">Login here</a></p>
+                        <p class="text-sm text-white mt-8">Already have an account? <a href="login.php"
+                                class="text-yellow-400 font-semibold hover:underline ml-1">Login here</a></p>
                     </div>
                 </form>
             </div>

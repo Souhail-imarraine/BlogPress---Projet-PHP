@@ -1,3 +1,12 @@
+<?php 
+require_once 'connection.php';
+
+
+if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST[""]))
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,21 +18,49 @@
 </head>
 
 <body class="bg-gray-900 font-sans">
+    <header>
+        <nav class="bg-white border-gray-200 dark:bg-gray-900">
+            <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+                <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BlogPress</span>
+                </a>
+                <button data-collapse-toggle="navbar-default" type="button"
+                    class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    aria-controls="navbar-default" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 17 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M1 1h15M1 7h15M1 13h15" />
+                    </svg>
+                </button>
+                <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+                    <ul
+                        class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                        <li>
+                            <a href="index.php"
+                                class="block py-2 px-3 text-white rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                                aria-current="page">Home</a>
+                        </li>
+
+                        <li>
+                            <a href="interfaceBlogs.php"
+                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Article</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
     <!-- Page Container -->
     <div class="max-w-7xl mx-auto p-4 md:p-6">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-white  mb-4 md:mb-0">
-            BlogPress
-            </h1>
-            <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2">
-                Deconnection
-            </button>
-        </div>
 
         <!-- Search Bar -->
         <div class="relative mb-6">
-            <input type="text" placeholder="Search article..." class="w-full py-3 px-5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none" />
+            <input type="text" placeholder="Search article..."
+                class="w-full py-3 px-5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none" />
         </div>
 
         <!-- Navigation Tabs -->
@@ -133,6 +170,36 @@
             </div>
         </div>
     </div>
+
+
+    <!-- modulle utilisateur -->
+
+    <div class="relative">
+        <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
+            <div class="bg-white bg-opacity-70 backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md relative">
+                <h2 class="text-2xl font-semibold text-center text-indigo-600 mb-6">Add this information</h2>
+                <form action="signup.php" method="POST">
+                <div id="errors"></div>
+                    <div class="mb-4">
+                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" name="username" id="username" placeholder="username"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" name="email" id="email" placeholder="email"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+                            required>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md">Click</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="blogs.js"></script>
 </body>
 
 </html>
