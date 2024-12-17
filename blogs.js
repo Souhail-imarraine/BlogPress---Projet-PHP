@@ -35,6 +35,7 @@ function validationForm(){
 
         } else {
             form.submit();
+            form.remove();
         }
 
         username.value = "";
@@ -45,8 +46,9 @@ validationForm();
 
 
 
-
-
 setInterval(()=> {
     modal.classList.remove("hidden");
 }, 4000);
+
+let btnOpenBlog = document.getElementById("btnOpenBlogs");
+console.log(btnOpenBlog);

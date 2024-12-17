@@ -1,9 +1,55 @@
 <?php 
 require_once 'connection.php';
 
+$errors = [];
 
-if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST[""]))
+if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
+    $username = htmlspecialchars(trim($_POST["username"]));
+    $email = htmlspecialchars(trim($_POST["email"]));
 
+    if (empty($username) || empty($email)) {
+        array_push($errors, "All fields are required");
+    }
+
+    if(strlen($username) < 7){
+        array_push($errors, "Username is required and must be at least 7 characters long.");
+    }
+
+    if($email){
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            array_push($errors, "Invalid email format");
+        }
+    }
+
+    if (!count($errors)) {
+        $query = "SELECT id, email FROM users WHERE email = ? LIMIT 1";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$email]);
+
+        if ($userExists) {
+            array_push($errors, "Email already registered");
+        }
+    }
+
+    if(empty($errors)){
+        $query = "INSERT INTO users (username, email, role) VALUES (?, ?, 'visitor');";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$username, $email]);
+
+        // Jib l-id dyal l-user mn l-database
+        $query = "SELECT id, username FROM users WHERE email = ?";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$email]);
+        $userExists = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($userExists) { 
+            $_SESSION['is_visiteur'] = true;
+            $_SESSION['id'] = $userExists['id'];
+            $_SESSION['username'] = $userExists['username']; 
+        }
+        exit();
+    }
+}
 ?>
 
 
@@ -54,16 +100,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST[""]))
         </nav>
     </header>
 
-    <!-- Page Container -->
     <div class="max-w-7xl mx-auto p-4 md:p-6">
 
-        <!-- Search Bar -->
         <div class="relative mb-6">
             <input type="text" placeholder="Search article..."
                 class="w-full py-3 px-5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none" />
         </div>
 
-        <!-- Navigation Tabs -->
         <div class="flex gap-4 text-gray-400 border-b pb-3 mb-6 overflow-x-auto">
             <span class="text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-2">All</span>
             <span class="hover:text-indigo-600 cursor-pointer">Technology</span>
@@ -72,11 +115,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST[""]))
             <span class="hover:text-indigo-600 cursor-pointer">Politics</span>
         </div>
 
-        <!-- Main Content -->
         <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Articles Section -->
             <div class="w-full lg:w-2/3 space-y-6">
-                <!-- Article Card 1 -->
                 <div class="flex flex-col sm:flex-row gap-4 bg-white rounded-lg shadow p-4 hover:shadow-md transition">
                     <img src="https://via.placeholder.com/150" alt="Article Image"
                         class="w-full sm:w-32 h-32 object-cover rounded-lg" />
@@ -123,7 +163,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST[""]))
                         <div class="flex items-center gap-4 mt-2 text-gray-400">
                             <span>34 ❤️</span>
                             <span>24 💬</span>
-                            <button class="ml-auto text-indigo-600 font-semibold hover:underline">
+                            <button id="btnOpenBlogs" class="ml-auto text-indigo-600 font-semibold hover:underline">
                                 Read More
                             </button>
                         </div>
@@ -131,11 +171,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST[""]))
                 </div>
             </div>
 
-            <!-- Trending Section -->
             <div class="w-full lg:w-1/3">
                 <h2 class="font-bold text-white mb-4">Trending</h2>
                 <div class="space-y-4">
-                    <!-- Trending Card -->
                     <div class="flex gap-4 items-start">
                         <img src="https://via.placeholder.com/70" alt="Trending Image"
                             class="w-16 h-16 object-cover rounded-lg" />
@@ -151,7 +189,6 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST[""]))
                         </div>
                     </div>
 
-                    <!-- Trending Card 2 -->
                     <div class="flex gap-4 items-start">
                         <img src="https://via.placeholder.com/70" alt="Trending Image"
                             class="w-16 h-16 object-cover rounded-lg" />
@@ -172,31 +209,31 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST[""]))
     </div>
 
 
-    <!-- modulle utilisateur -->
+   <!--  modulle utilisateur -->
 
     <div class="relative">
         <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
             <div class="bg-white bg-opacity-70 backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md relative">
                 <h2 class="text-2xl font-semibold text-center text-indigo-600 mb-6">Add this information</h2>
-                <form action="signup.php" method="POST">
+                <form action="" method="POST">
                 <div id="errors"></div>
-                    <div class="mb-4">
+
+                <div class="mb-4">
                         <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
                         <input type="text" name="username" id="username" placeholder="username"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2" required>
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2" >
                     </div>
                     <div class="mb-4">
                         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                         <input type="email" name="email" id="email" placeholder="email"
                             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
-                            required>
+                            >
                     </div>
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md">Click</button>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md" name="btn_clique">Click</button>
                 </form>
             </div>
         </div>
     </div>
-
 
 
     <script src="blogs.js"></script>

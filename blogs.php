@@ -9,9 +9,7 @@
 </head>
 
 <body class="bg-gray-900 font-sans">
-    <!-- Page Container -->
     <div class="max-w-4xl mx-auto p-6">
-        <!-- Blog Header -->
         <header class="mb-8">
             <h1 class="text-4xl font-bold text-indigo-600">Interactive Blog Post</h1>
         </header>
@@ -32,7 +30,6 @@
                 </div>
             </div>
 
-            <!-- Like Button -->
             <div class="flex items-center mb-6">
                 <button id="like-btn"
                     class="flex items-center gap-2 bg-gray-100 text-gray-600 px-4 py-2 rounded-lg shadow hover:bg-indigo-100 hover:text-indigo-600 transition">
@@ -40,11 +37,9 @@
                 </button>
             </div>
 
-            <!-- Comment System -->
             <section>
                 <h3 class="text-xl font-semibold mb-4">Comments</h3>
-
-                <!-- Comment Form -->
+                
                 <div class="mb-6">
                     <textarea id="comment-input" rows="3" placeholder="Write your comment..."
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"></textarea>
@@ -54,7 +49,6 @@
                     </button>
                 </div>
 
-                <!-- Comment List -->
                 <div id="comment-list" class="space-y-4">
                     <p class="text-gray-500">No comments yet. Be the first to comment!</p>
                 </div>
@@ -62,9 +56,7 @@
         </article>
     </div>
 
-    <!-- JavaScript -->
     <script>
-    // Simulate a view counter
     const viewCounter = document.getElementById("views");
     let views = 0;
     const incrementViews = () => {

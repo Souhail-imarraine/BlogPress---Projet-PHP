@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'author') {
+    header('Location: ../login.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +15,6 @@
     <title>Author Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-    /* Custom dark mode toggle style */
     @media (prefers-color-scheme: dark) {
         body {
             background-color: #121212;
@@ -19,10 +26,7 @@
 
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 font-sans">
 
-    <!-- Page Container -->
     <div class="max-w-7xl mx-auto p-6 flex flex-col lg:flex-row">
-
-        <!-- Sidebar -->
         <div class="w-full lg:w-64 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6 lg:mb-0 lg:h-screen">
             <h2 class="text-2xl font-semibold text-indigo-600 dark:text-indigo-400 mb-8">Dashboard</h2>
             <ul class="space-y-6">
@@ -53,8 +57,9 @@
             <header class="flex justify-between items-center mb-12">
                 <h1 class="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">Author Dashboard</h1>
                 <button
-                    class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600">
+                    class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600"><a href="../logout.php">
                     Deconnexion
+                    </a>
                 </button>
             </header>
 

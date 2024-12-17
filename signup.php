@@ -2,7 +2,7 @@
 require_once 'connection.php';
 
 if (isset($_SESSION['logged_in'])) {
-    header('location: index.php');
+    header('location: login.php');
 }
 
 // Stock les erreurs
@@ -41,19 +41,12 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
         // Hash password
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+        $query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'author')";
         $stmt = $pdo->prepare($query);
 
         $stmt->execute([$username, $email, $passwordHash]);
 
-        // Start session
-        $_SESSION['logged_in'] = true;
-        $_SESSION['user_name'] = $username;
-        $_SESSION['success_message'] = "Welcome back, $username";
-        // print_r($_SESSION['logged_in']);
-
-        header('location: authors/index.php');
-
+        header('location: login.php');
         $pdo = null;
         $stmt = null;
         exit();
@@ -133,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
                         <h3 class="text-3xl font-bold text-yellow-400">Create an account</h3>
                     </div>
 
-                    <?php include 'errors.php'; ?>
+                    <?php include 'errors.php';?>
 
                     <div>
                         <label class="text-white text-xs block mb-2">Full Name</label>
@@ -144,9 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
                             <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
                                 class="w-[18px] h-[18px] absolute right-2" viewBox="0 0 24 24">
                                 <circle cx="10" cy="7" r="6" data-original="#000000"></circle>
-                                <path
-                                    d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
-                                    data-original="#000000"></path>
+                                <path d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z" data-original="#000000"></path>
                             </svg>
                         </div>
                     </div>

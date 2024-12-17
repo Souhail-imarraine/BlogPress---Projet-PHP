@@ -1,19 +1,64 @@
 <?php
 require 'connection.php';
 
+session_start();
+
+if(isset($_SESSION['logged_in'])){
+    header('Location: authors/index.php');
+    exit();
+}
+
+$errors = [];
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["signin"])) {
+    $email = htmlspecialchars(trim($_POST["email"]));
+    $password = htmlspecialchars(trim($_POST["password"]));
+
+    if (empty($email)) {
+        $errors[] = "Email is required.";
+    }
+    if (empty($password)) {
+        $errors[] = "Password is required.";
+    }
+
+    if (!$errors) {
+        $query = "SELECT id, username, email, password, role FROM users WHERE email = ? LIMIT 1";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$email]);
+        $userExists = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$userExists) {
+            $errors[] = "The email, $email, does not exist.";
+        } else {
+            if (password_verify($password, $userExists['password'])) {
+                $_SESSION['logged_in'] = true;
+                $_SESSION['user_id'] = $userExists['id'];
+                $_SESSION['username'] = $userExists['username'];
+                $_SESSION['role'] = $userExists['role'];
+
+                header('Location: authors/index.php');
+                exit();
+            } else {
+                $errors[] = "Invalid password.";
+            }
+        }
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>login</title>
+    <title>Login</title>
 </head>
 
 <body>
-    <header>
+<header>
         <nav class="bg-white border-gray-200 dark:bg-gray-900">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
@@ -33,28 +78,22 @@ require 'connection.php';
                     <ul
                         class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                         <li>
-                            <a href="index.php" class="block py-2 px-3 text-white rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
+                            <a href="index.php"
+                                class="block py-2 px-3 text-white rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
                                 aria-current="page">Home</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Article</a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
                         </li>
 
                         <li>
-                            <a href="login.php" class="no-underline text-white hover:text-amber-600 transition duration-200">Sign in</a>
+                            <a href="interfaceBlogs.php"
+                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Article</a>
                         </li>
-                        <li>
-                            <a href="signup.php"
-                                class="bg-white text-black hover:bg-white transition duration-200 py-2 px-4 rounded">Sign up</a>
-                        </li>
+
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="font-[sans-serif] bg-white md:h-screen">
         <div class="grid md:grid-cols-2 items-center gap-8 h-full">
             <div class="max-md:order-1 p-4">
@@ -63,62 +102,45 @@ require 'connection.php';
             </div>
 
             <div class="flex items-center md:p-8 p-6 bg-[#0C172C] h-full lg:w-11/12 lg:ml-auto">
-                <form class="max-w-lg w-full mx-auto">
+                <form method="post" action="" class="max-w-lg w-full mx-auto">
                     <div class="mb-12">
-                        <h3 class="text-3xl font-bold text-yellow-400">Create an account</h3>
+                        <h3 class="text-3xl font-bold text-yellow-400">Sign in</h3>
                     </div>
+
+                    <?php include 'errors.php'; ?>
 
                     <div class="mt-8">
                         <label class="text-white text-xs block mb-2">Email</label>
                         <div class="relative flex items-center">
-                            <input name="email" type="text" required
+                            <input name="email" type="text"
                                 class="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
-                                placeholder="Enter email" />
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
-                                class="w-[18px] h-[18px] absolute right-2" viewBox="0 0 682.667 682.667">
-                                <defs>
-                                    <clipPath id="a" clipPathUnits="userSpaceOnUse">
-                                        <path d="M0 512h512V0H0Z" data-original="#000000"></path>
-                                    </clipPath>
-                                </defs>
-                                <g clip-path="url(#a)" transform="matrix(1.33 0 0 -1.33 0 682.667)">
-                                    <path fill="none" stroke-miterlimit="10" stroke-width="40"
-                                        d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z"
-                                        data-original="#000000"></path>
-                                    <path
-                                        d="M472 274.9V107.999c0-11.027-8.972-20-20-20H60c-11.028 0-20 8.973-20 20V274.9L0 304.652V107.999c0-33.084 26.916-60 60-60h392c33.084 0 60 26.916 60 60v196.653Z"
-                                        data-original="#000000"></path>
-                                </g>
-                            </svg>
+                                placeholder="Enter email" value=""/>
                         </div>
                     </div>
+
                     <div class="mt-8">
                         <label class="text-white text-xs block mb-2">Password</label>
                         <div class="relative flex items-center">
-                            <input name="password" type="password" required
+                            <input name="password" type="password"
                                 class="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
                                 placeholder="Enter password" />
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
-                                class="w-[18px] h-[18px] absolute right-2 cursor-pointer" viewBox="0 0 128 128">
-                                <path
-                                    d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z"
-                                    data-original="#000000"></path>
-                            </svg>
                         </div>
                     </div>
 
                     <div class="mt-12">
-                        <button type="button"
-                            class="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-transparent bg-yellow-400 hover:bg-yellow-500 focus:outline-none">
-                            Register
+                        <button type="submit" name="signin"
+                            class="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-yellow-400 hover:bg-yellow-500 focus:outline-none">
+                            Sign In
                         </button>
-                        <p class="text-sm text-white mt-8">Create New account? <a href="signup.php"
-                                class="text-yellow-400 font-semibold hover:underline ml-1">sign up</a></p>
+                        <p class="text-sm text-white mt-8">Create New account? <a href="signup.php" class="text-yellow-400 font-semibold hover:underline ml-1">Sign up</a></p>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+
+    <script src="main.js"></script>
 </body>
 
 </html>
