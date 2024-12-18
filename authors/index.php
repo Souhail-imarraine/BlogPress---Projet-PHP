@@ -1,19 +1,68 @@
 <?php
+require '../connection.php';
 session_start();
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'author') {
     header('Location: ../login.php');
 }
 
-
 // create a new blog 
+$errors = []; 
 
+try{
+    $quers = "SELECT id, title, content, categorie, views, likes FROM articles order by id";
+    $stmt1 = $pdo->prepare($quers);
+    $stmt1->execute();
+    $articles = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+}catch(PDOException $e){
+    echo "field select data". $e->getMessage();
+};
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
-    $title = htmlspecialchars(trim($_POST['']));
-    $content = htmlspecialchars(trim($_POST['']));
-    $tags = htmlspecialchars(trim($_POST['']));
-    $categorie = htmlspecialchars(trim($_POST['']));
+    $title = htmlspecialchars(trim($_POST['title']));
+    $content = htmlspecialchars(trim($_POST['content']));
+    $tags = htmlspecialchars(trim($_POST['tags']));
+    $categorie = htmlspecialchars(trim($_POST['category']));
+    $author_id = $_SESSION['user_id']; 
+    $views = 0 ;
+    $likes = 0 ;
+
+    
+        $allowed_categories = ["technology", "lifestyle", "education", "health"];
+
+        if(empty($title) || empty($content) || empty($tags)){
+            array_push($errors, "all field is ");
+        }
+
+        if($categorie) {
+            if(!in_array($categorie, $allowed_categories)){
+                array_push($errors, 'Invalid category selected.');
+            }
+        }
+
+    if($content){
+        if(strlen($content) < 50){
+            array_push($errors, "you should add more then 50 caractere");
+        }
+    }
+
+    if(empty($errors)){
+        try { 
+            $query = "INSERT INTO articles(title, content, author_id, views, likes, tags, categorie) VALUES (?,?,?,?,?,?,?)";
+            $stmt = $pdo->prepare($query); 
+            $stmt->execute([$title, $content, $author_id, $views, $likes, $tags, $categorie]);
+
+            // echo "this is my data " . $dataBlogs;
+        } catch (PDOException $e) 
+        { 
+            echo "Error: " . $e->getMessage(); 
+        }
+       
+    }
+
 }
+
+
 
 ?>
 
@@ -129,51 +178,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
                                 </tr>
                             </thead>
                             <tbody>
+                               <?php foreach($articles as $article) : ?> 
                                 <tr class="bg-gray-50 hover:bg-gray-100">
-                                    <td class="border border-gray-200 px-4 py-3">1</td>
-                                    <td class="border border-gray-200 px-4 py-3">The Future of Tech</td>
-                                    <td class="border border-gray-200 px-4 py-3">1200</td>
-                                    <td class="border border-gray-200 px-4 py-3">150</td>
-                                    <td class="border border-gray-200 px-4 py-3">Technology</td>
+                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['id'] ;?></td>
+                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['title'] ;?></td>
+                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['views'] ;?></td>
+                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['likes'] ;?></td>
+                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['categorie'] ;?></td>
                                     <td class="border border-gray-200 px-4 py-3">
                                         <div class="flex gap-4">
                                             <button
-                                                class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-lg hover:bg-yellow-500">Edit</button>
+                                                class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-lg hover:bg-yellow-500">
+                                                <a href="edit.php?BlogsId <?php echo$article['id']; ?>">Edit</a></button>
                                             <button
                                                 class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Delete</button>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr class="bg-gray-100 hover:bg-gray-200">
-                                    <td class="border border-gray-200 px-4 py-3">2</td>
-                                    <td class="border border-gray-200 px-4 py-3">Eco-Friendly Solutions</td>
-                                    <td class="border border-gray-200 px-4 py-3">980</td>
-                                    <td class="border border-gray-200 px-4 py-3">87</td>
-                                    <td class="border border-gray-200 px-4 py-3">Lifestyle</td>
-                                    <td class="border border-gray-200 px-4 py-3">
-                                        <div class="flex gap-4">
-                                            <button
-                                                class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-lg hover:bg-yellow-500">Edit</button>
-                                            <button
-                                                class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="bg-gray-50 hover:bg-gray-100">
-                                    <td class="border border-gray-200 px-4 py-3">3</td>
-                                    <td class="border border-gray-200 px-4 py-3">Climate Change and Technology</td>
-                                    <td class="border border-gray-200 px-4 py-3">760</td>
-                                    <td class="border border-gray-200 px-4 py-3">45</td>
-                                    <td class="border border-gray-200 px-4 py-3">Environment</td>
-                                    <td class="border border-gray-200 px-4 py-3">
-                                        <div class="flex gap-4">
-                                            <button
-                                                class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-lg hover:bg-yellow-500">Edit</button>
-                                            <button
-                                                class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <?php endforeach ; ?>
                             </tbody>
                         </table>
                     </div>
@@ -191,8 +213,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
                 <button class="cancel"><i class="fa-solid fa-xmark"
                         style="color: #DC2626; font-size: 40px;"></i></button>
             </div>
-            <form>
+            <form action="" method="post">
                 <!-- Title -->
+                <?php include 'error.php' ?>
+
                 <div class="mb-4">
                     <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
                     <input type="text" id="title" name="title"
@@ -211,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
                     <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
                     <input type="text" id="tags" name="tags"
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                        placeholder="e.g., technology, coding, design">
+                        placeholder="e.g., technology, coding, design" required>
                 </div>
                 <!-- Category -->
                 <div class="mb-4">

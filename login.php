@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["signin"])) {
 </head>
 
 <body>
-<header>
+    <header>
         <nav class="bg-white border-gray-200 dark:bg-gray-900">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["signin"])) {
                         <div class="relative flex items-center">
                             <input name="email" type="text"
                                 class="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
-                                placeholder="Enter email" value=""/>
+                                placeholder="Enter email" value="" />
                         </div>
                     </div>
 
@@ -132,7 +132,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["signin"])) {
                             class="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-yellow-400 hover:bg-yellow-500 focus:outline-none">
                             Sign In
                         </button>
-                        <p class="text-sm text-white mt-8">Create New account? <a href="signup.php" class="text-yellow-400 font-semibold hover:underline ml-1">Sign up</a></p>
+                        <p class="text-sm text-white mt-8">Create New account? <a href="signup.php"
+                                class="text-yellow-400 font-semibold hover:underline ml-1">Sign up</a></p>
                     </div>
                 </form>
             </div>

@@ -139,7 +139,8 @@
                             first project with React</a></h2>
                     <p class="mb-5 font-light text-gray-500 dark:text-gray-400">Static websites are now used to
                         bootstrap lots of websites and are becoming the basis for a variety of tools that even influence
-                        both web designers and developers influence both web designers and developers.</p>
+                        both web designers and developers influence both web designers and developers.
+                    </p>
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-4">
                             <img class="w-7 h-7 rounded-full"

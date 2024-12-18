@@ -13,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
     $email = htmlspecialchars(trim($_POST["email"]));
     $password = htmlspecialchars(trim($_POST["password"]));
 
-
     if (empty($username) || empty($email) || empty($password)) {
         array_push($errors, "All field is required");
     }
@@ -45,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
         $stmt = $pdo->prepare($query);
 
         $stmt->execute([$username, $email, $passwordHash]);
-
+        
         header('location: login.php');
         $pdo = null;
         $stmt = null;

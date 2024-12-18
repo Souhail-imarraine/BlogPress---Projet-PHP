@@ -3,7 +3,6 @@ let containerCreateBlog = document.querySelector(".containerCreateBlog");
 
 btnAddArticle.addEventListener("click", ()=> {
     containerCreateBlog.classList.remove("hidden");
-    console.log("hhh")
 });
 
 
