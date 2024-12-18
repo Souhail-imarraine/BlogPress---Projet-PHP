@@ -6,7 +6,6 @@ let email = form.email;
 
 let errors = [];
 let containerError = document.getElementById("errors");
-console.log(containerError);
 
 function validationForm(){
     form.addEventListener('submit', (e) => {
@@ -35,7 +34,6 @@ function validationForm(){
 
         } else {
             form.submit();
-            form.remove();
         }
 
         username.value = "";
@@ -45,10 +43,12 @@ function validationForm(){
 validationForm();
 
 
-
-setInterval(()=> {
-    modal.classList.remove("hidden");
-}, 4000);
-
-let btnOpenBlog = document.getElementById("btnOpenBlogs");
+let btnOpenBlog = document.querySelectorAll(".btnOpenBlogs");
 console.log(btnOpenBlog);
+btnOpenBlog.forEach((btnopen)=> {
+    btnopen.addEventListener("click", ()=> {
+        setInterval(()=> {
+            modal.classList.remove("hidden");
+        }, 500);
+    })
+})

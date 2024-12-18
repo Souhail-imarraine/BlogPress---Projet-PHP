@@ -50,6 +50,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
         exit();
     }
 }
+
 ?>
 
 
@@ -60,7 +61,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Responsive For You - Tailwind CSS</title>
-    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-900 font-sans">
@@ -136,8 +137,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
                         <div class="flex items-center gap-4 mt-2 text-gray-400">
                             <span>41 ❤️</span>
                             <span>21 💬</span>
-                            <button class="ml-auto text-indigo-600 font-semibold hover:underline">
-                                Read More
+                            <button class="ml-auto text-indigo-600 font-semibold hover:underline btnOpenBlogs">
+                                <a href="blogs.php">Read More</a>
                             </button>
                         </div>
                     </div>
@@ -163,8 +164,8 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
                         <div class="flex items-center gap-4 mt-2 text-gray-400">
                             <span>34 ❤️</span>
                             <span>24 💬</span>
-                            <button id="btnOpenBlogs" class="ml-auto text-indigo-600 font-semibold hover:underline">
-                                Read More
+                            <button class="ml-auto text-indigo-600 font-semibold hover:underline btnOpenBlogs">
+                                <a href="blogs.php">Read More</a>
                             </button>
                         </div>
                     </div>
@@ -236,7 +237,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
     </div>
 
 
-    <script src="blogs.js"></script>
+    <!-- <script src="blogs.js"></script> -->
 </body>
 
 </html>
