@@ -51,16 +51,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
             $query = "INSERT INTO articles(title, content, author_id, views, likes, tags, categorie) VALUES (?,?,?,?,?,?,?)";
             $stmt = $pdo->prepare($query); 
             $stmt->execute([$title, $content, $author_id, $views, $likes, $tags, $categorie]);
-
-            // echo "this is my data " . $dataBlogs;
+            header("Location: " . $_SERVER['PHP_SELF']); 
+            exit();
         } catch (PDOException $e) 
         { 
             echo "Error: " . $e->getMessage(); 
         }
        
     }
-
 }
+
+
+/* ***********************************************************************
+****************************** DELETE ************************************
+**************************************************************************/
+
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])){
+    $stmtDelete = $pdo->prepare("DELETE FROM articles WHERE id = ? ");
+    $ArticleId = $_POST['ArticleId'];
+    $stmtDelete->execute([$ArticleId]);
+
+    header("Location: " . $_SERVER['PHP_SELF']); 
+    exit();
+}
+
+/* ***********************************************************************
+****************************** STATISTIQUE *******************************
+**************************************************************************/
+
+try{
+    $st = "SELECT a.id, a.views, a.likes, FROM articles a INNER JOIN comments c WHERE ";
+
+}catch(PDOException $e){
+    echo "field select data". $e->getMessage();
+};
+
 
 
 
@@ -117,6 +142,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
             <!-- Header -->
             <header class="flex justify-between items-center mb-12">
                 <h1 class="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">Author Dashboard</h1>
+
+                <?php include 'success_message.php' ?>
+
                 <button
                     class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600"><a
                         href="../logout.php">
@@ -163,9 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
             <!-- Blog Management -->
             <section class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                 <div class="inset-0 flex items-center justify-center">
-                    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-2xl">
-                        <h1 class="text-3xl font-extrabold text-gray-800 mb-6 border-b-2 border-indigo-500 pb-4">Manage
-                            Your Articles</h1>
+                    <div class="max-w-4xl mx-auto p-8 rounded-lg shadow-2xl w-full">
                         <table class="w-full table-auto border-collapse border border-gray-200 rounded-lg">
                             <thead>
                                 <tr class="bg-indigo-500 text-white text-left">
@@ -178,20 +204,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
                                 </tr>
                             </thead>
                             <tbody>
-                               <?php foreach($articles as $article) : ?> 
+                                <?php foreach($articles as $article) : ?>
                                 <tr class="bg-gray-50 hover:bg-gray-100">
-                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['id'] ;?></td>
-                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['title'] ;?></td>
-                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['views'] ;?></td>
-                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['likes'] ;?></td>
-                                    <td class="border border-gray-200 px-4 py-3"><?php echo$article['categorie'] ;?></td>
-                                    <td class="border border-gray-200 px-4 py-3">
+                                    <td
+                                        class="border border-gray-300 px-4 py-3 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-300">
+                                        <?php echo $article['id'] ;?></td>
+                                    <td
+                                        class="border border-gray-300 px-4 py-3 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-300">
+                                        <?php echo $article['title'] ;?></td>
+                                    <td
+                                        class="border border-gray-300 px-4 py-3 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-300">
+                                        <?php echo $article['views'] ;?></td>
+                                    <td
+                                        class="border border-gray-300 px-4 py-3 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-300">
+                                        <?php echo $article['likes'] ;?></td>
+                                    <td
+                                        class="border border-gray-300 px-4 py-3 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-300">
+                                        <?php echo $article['categorie'] ;?></td>
+                                    <td
+                                        class="border border-gray-300 px-4 py-3 bg-indigo-50 text-indigo-700 dark:bg-gray-700 dark:text-indigo-300">
                                         <div class="flex gap-4">
                                             <button
                                                 class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-lg hover:bg-yellow-500">
-                                                <a href="edit.php?BlogsId <?php echo$article['id']; ?>">Edit</a></button>
-                                            <button
-                                                class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Delete</button>
+                                                <a href="edit.php?ArticleId=<?php echo $article['id'];?>">Edit</a>
+                                            </button>
+                                            <!-- delete -->
+                                            <form onsubmit="return confirm('Are you sure ?')" action="" method="post">
+                                                <input type="hidden" value="<?php echo $article['id']?>" name="ArticleId">
+                                                <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" name="delete" type="submit">Delete</button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

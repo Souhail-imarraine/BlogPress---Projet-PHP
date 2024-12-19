@@ -25,7 +25,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
         $query = "SELECT id, email FROM users WHERE email = ? LIMIT 1";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$email]);
-
+        
         if ($userExists) {
             array_push($errors, "Email already registered");
         }
