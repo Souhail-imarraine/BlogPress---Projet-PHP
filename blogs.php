@@ -34,17 +34,30 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['like'])){
     $stmt = $pdo->prepare($queryLikes);
     $stmt->execute([$ArticleId]);
 
+    header('Location: '. $_SERVER['PHP_SELF']."?BlogId=".$ArticleId);
 };
 
 // commentaire 
 
-// if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment'])){
-//     $queryLikes = "INSERT INTO comments WHERE id = ? where id = ?";
-//     $stmt = $pdo->prepare($queryLikes);
-//     $stmt->execute([$Maxlikes, $ArticleId]);
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment'])){
 
-//     // header('Location: '. $_SERVER['PHP_SELF']);
-// };
+    $comment = htmlspecialchars(trim($_POST['content']));
+    $username = htmlspecialchars(trim($_POST['username']));
+    $email = htmlspecialchars(trim($_POST['email']));
+
+   
+
+    $queryLikes = "INSERT INTO comments (content) VALUES (?) WHERE article_id = ?";
+    $stmt = $pdo->prepare($queryLikes);
+    $stmt->execute([$comment, $ArticleId]);
+
+
+    // $queryLikes = "INSERT INTO users WHERE id = ?";
+    // $stmt = $pdo->prepare($queryLikes);
+    // $stmt->execute([$ArticleId]);
+
+    // header('Location: '. $_SERVER['PHP_SELF']);
+};
 
 
 ?>
@@ -94,10 +107,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['like'])){
 
                 <form action="" method="post">
                     <div class="mb-6">
+                        <div class="mb-4"> <label for="username"
+                                class="block text-gray-700 text-sm font-bold mb-2">Username</label> 
+                                <input type="text" id="username"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Enter your username" name="username"> </div>
+                        <div class="mb-4"> <label for="email"
+                                class="block text-gray-700 text-sm font-bold mb-2">Email</label> <input type="text"
+                                id="email"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Enter your email" name="email">
+                             </div>
                         <textarea id="comment-input" rows="3" placeholder="Write your comment..."
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"></textarea>
-                        <button type="submit" id="submit-comment" name="comment"
-                            class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none" name="content"></textarea>
+                        <button type="submit" id="submit-comment" name="comment" class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
                             Post Comment
                         </button>
                     </div>
