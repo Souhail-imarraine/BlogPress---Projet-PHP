@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["signin"])) {
                 $_SESSION['user_id'] = $userExists['id'];
                 $_SESSION['username'] = $userExists['username'];
                 $_SESSION['role'] = $userExists['role'];
-                
+
                 $_SESSION['success_message'] = "You have successfully signed in.";
                 header('Location: authors/index.php');
                 exit();
@@ -109,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["signin"])) {
                     </div>
 
                     <?php include 'errors.php'; ?>
+                    <?php include 'succes_mess.php'; ?>
 
                     <div class="mt-8">
                         <label class="text-white text-xs block mb-2">Email</label>

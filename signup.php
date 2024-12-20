@@ -1,6 +1,8 @@
 <?php
 require_once 'connection.php';
 
+session_start();
+
 if (isset($_SESSION['logged_in'])) {
     header('location: login.php');
 }
@@ -44,7 +46,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
         $stmt = $pdo->prepare($query);
 
         $stmt->execute([$username, $email, $passwordHash]);
-        
+
+        $_SESSION['success_message'] = 'sign up success';
+
         header('location: login.php');
         $pdo = null;
         $stmt = null;
@@ -90,12 +94,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
                                 aria-current="page">Home</a>
                         </li>
                         <li>
-                            <a href="#"
+                            <a href="interfaceBlogs.php"
                                 class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Article</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
                         </li>
 
                         <li>

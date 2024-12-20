@@ -19,6 +19,7 @@ $article = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$article) { 
     die('Article not found'); 
 }
+
 // DB GHADII NDECLARIW VALIABLE FIH KOLA HAJA BOHDHA OK
 $title = $article['title'];
 $content = $article['content'];

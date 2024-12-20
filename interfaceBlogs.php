@@ -25,7 +25,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
         $query = "SELECT id, email FROM users WHERE email = ? LIMIT 1";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$email]);
-        
+
         if ($userExists) {
             array_push($errors, "Email already registered");
         }
@@ -51,6 +51,34 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
     }
 }
 
+
+
+    try {
+
+        $query = "SELECT * FROM articles";
+        $st = $pdo->prepare($query);
+        $st->execute();
+        $datainfo = $st->fetchAll(PDO:: FETCH_ASSOC);
+
+
+    }catch(ErrorException $e){
+        echo "error fetch data from article " . $e->getMessage();
+    }
+
+
+    // read blogs 
+
+    if(isset($_POST["btnOpenBlogs"])) {
+        header('Location: blogs.php');
+    }
+
+    // trending blogs 
+
+    $queryTrend = "SELECT * FROM articles ORDER BY views desc LIMIT 3";
+    $stTrent = $pdo->prepare($queryTrend);
+    $stTrent->execute();
+
+    $trendBlogs = $stTrent->fetchAll(PDO:: FETCH_ASSOC);
 ?>
 
 
@@ -118,126 +146,66 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
 
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="w-full lg:w-2/3 space-y-6">
+                <?php foreach($datainfo as $data) : ?>
                 <div class="flex flex-col sm:flex-row gap-4 bg-white rounded-lg shadow p-4 hover:shadow-md transition">
-                    <img src="https://via.placeholder.com/150" alt="Article Image"
-                        class="w-full sm:w-32 h-32 object-cover rounded-lg" />
+                    <img src="blogs.jpg" alt="Article Image" class="w-full sm:w-32 h-32 object-cover rounded-lg" />
                     <div class="flex-1">
                         <h2 class="font-bold text-lg">
-                            The overlooked benefits of real Christmas trees
+                            <?php echo $data['title']; ?>
                         </h2>
                         <p class="text-gray-500 text-sm my-2">
-                            The environmental pros and cons of Christmas trees go far beyond
-                            the...
+                            <?php echo $data['content'] ;?>
                         </p>
                         <div class="flex items-center text-sm gap-2">
                             <span class="text-gray-700 font-semibold">⭐ Rey</span>
-                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">Environment</span>
-                            <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs">Green</span>
+                            <span
+                                class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs"><?php echo $data['categorie']; ?></span>
+                            <span
+                                class="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs"><?php echo $data['created_at'] ;?></span>
                         </div>
                         <div class="flex items-center gap-4 mt-2 text-gray-400">
-                            <span>41 ❤️</span>
+                            <span> <?php echo $data['likes']; ?> ❤️</span>
                             <span>21 💬</span>
-                            <button class="ml-auto text-indigo-600 font-semibold hover:underline btnOpenBlogs">
-                                <a href="blogs.php">Read More</a>
+                            <div id="view-counter" class="flex items-center mr-4">
+                                <span class="ml-1">Views: <span id="views"><?php echo $data['views'];?></span></span>
+                            </div>
+                            <button class="ml-auto text-indigo-600 font-semibold hover:underline btnOpenBlogs"
+                                name="btnOpenBlogs">
+                                <a href="blogs.php?BlogId=<?php echo $data['id']; ?>">Read More</a>
                             </button>
                         </div>
                     </div>
                 </div>
+                <?php endforeach ; ?>
 
-                <!-- Article Card 2 -->
-                <div class="flex flex-col sm:flex-row gap-4 bg-white rounded-lg shadow p-4 hover:shadow-md transition">
-                    <img src="https://via.placeholder.com/150" alt="Article Image"
-                        class="w-full sm:w-32 h-32 object-cover rounded-lg" />
-                    <div class="flex-1">
-                        <h2 class="font-bold text-lg">
-                            The law comes for Bankman-Fried
-                        </h2>
-                        <p class="text-gray-500 text-sm my-2">
-                            Less than a week after telling a BBC journalist that he didn’t
-                            think he’d be arrested...
-                        </p>
-                        <div class="flex items-center text-sm gap-2">
-                            <span class="text-gray-700 font-semibold">⭐ Sam</span>
-                            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">Tech</span>
-                            <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs">FTX</span>
-                        </div>
-                        <div class="flex items-center gap-4 mt-2 text-gray-400">
-                            <span>34 ❤️</span>
-                            <span>24 💬</span>
-                            <button class="ml-auto text-indigo-600 font-semibold hover:underline btnOpenBlogs">
-                                <a href="blogs.php">Read More</a>
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="w-full lg:w-1/3">
                 <h2 class="font-bold text-white mb-4">Trending</h2>
                 <div class="space-y-4">
-                    <div class="flex gap-4 items-start">
-                        <img src="https://via.placeholder.com/70" alt="Trending Image"
-                            class="w-16 h-16 object-cover rounded-lg" />
-                        <div>
-                            <h3 class="font-semibold text-white text-sm">
-                                How Will AI Image Generators Affect Artists?
-                            </h3>
-                            <div class="flex items-center text-xs gap-2 text-gray-500">
-                                <span>Rey</span>
-                                <span class="bg-purple-100 text-purple-600 px-2 py-0.5 rounded">Art</span>
-                                <span class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Tech</span>
-                            </div>
-                        </div>
-                    </div>
 
+                    <?php foreach($trendBlogs as $query): ?>
                     <div class="flex gap-4 items-start">
-                        <img src="https://via.placeholder.com/70" alt="Trending Image"
+                        <img src="blogs.jpg" alt="Trending Image"
                             class="w-16 h-16 object-cover rounded-lg" />
                         <div>
                             <h3 class="font-semibold text-white text-sm">
-                                Burying Green: Eco-Friendly Death Care On The Rise
+                                <?php echo $query['title'] ?>
                             </h3>
                             <div class="flex items-center text-xs gap-2 text-gray-500">
-                                <span>Ron</span>
-                                <span class="bg-green-100 text-green-600 px-2 py-0.5 rounded">Environment</span>
-                                <span class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Tech</span>
+                                <span> <?php echo $query['views'] ?> vue</span>
+                                <span class="bg-purple-100 text-purple-600 px-2 py-0.5 rounded"><?php echo $query['categorie'] ?></span>
+                                <span class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded"><?php echo $query['tags'] ?></span>
                             </div>
                         </div>
                     </div>
+                    <?php endforeach ; ?>
                 </div>
             </div>
         </div>
     </div>
 
-
-   <!--  modulle utilisateur -->
-
-    <div class="relative">
-        <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
-            <div class="bg-white bg-opacity-70 backdrop-blur-md p-8 rounded-lg shadow-lg w-full max-w-md relative">
-                <h2 class="text-2xl font-semibold text-center text-indigo-600 mb-6">Add this information</h2>
-                <form action="" method="POST">
-                <div id="errors"></div>
-
-                <div class="mb-4">
-                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                        <input type="text" name="username" id="username" placeholder="username"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2" >
-                    </div>
-                    <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" name="email" id="email" placeholder="email"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
-                            >
-                    </div>
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md" name="btn_clique">Click</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- <script src="blogs.js"></script> -->
+    <script src="blogs.js"></script>
 </body>
 
 </html>

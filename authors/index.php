@@ -27,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
     $views = 0 ;
     $likes = 0 ;
 
-    
         $allowed_categories = ["technology", "lifestyle", "education", "health"];
 
         if(empty($title) || empty($content) || empty($tags)){
@@ -80,7 +79,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])){
 **************************************************************************/
 
 try{
-    $st = "SELECT a.id, a.views, a.likes, FROM articles a INNER JOIN comments c WHERE ";
+    $quer = "SELECT a.id, a.views, a.likes, COUNT(c.id) AS comment_count 
+    FROM articles a INNER JOIN comments c ON a.id = c.article_id GROUP BY a.id";
+    $st = $pdo->prepare($quer);
+
+    $st->execute();
+
+    $statusinfo = $st->fetch(PDO:: FETCH_ASSOC);
+    
+    // echo "<prev>" . $statusinfo . "</prev>";
 
 }catch(PDOException $e){
     echo "field select data". $e->getMessage();
@@ -159,23 +166,25 @@ try{
                 </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- Article Stats -->
+                     <?php foreach ($statusinfo as $status) : ?>
                     <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm">
                         <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Article Views</h3>
-                        <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">1,234 Views</p>
+                        <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400"><?php echo $status['views']; ?></p>
                     </div>
                     <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm">
                         <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Article Likes</h3>
-                        <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">567 Likes</p>
+                        <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400"><?php echo $status['likes']; ?></p>
                     </div>
                     <!-- Comments Stats -->
                     <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm">
                         <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Comments Count</h3>
-                        <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">89 Comments</p>
+                        <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400"><?php echo $status['comment_count']; ?></p>
                     </div>
                     <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm">
                         <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Avg. Read Time</h3>
                         <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">5 mins</p>
                     </div>
+                    <?php endforeach ; ?>
                 </div>
 
                 <!-- Graph Placeholder -->
