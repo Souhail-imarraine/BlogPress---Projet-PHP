@@ -85,10 +85,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
 </head>
 
 <body>
-    <div class="inset-0 flex items-center justify-center p-4 containerCreateBlog">
-        <div class="w-full max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <div class="inset-0 flex items-center justify-center p-4 dark:bg-gray-900 font-sans containerCreateBlog">
+        <div class="w-full max-w-3xl mx-auto dark:bg-gray-700 text-gray-900 dark:text-gray-200 font-sans p-8 rounded-lg shadow-lg">
             <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Blog</h1>
+                <h1 class="text-2xl font-bold text-white mb-6">Edit Blog</h1>
                 <button class="cancel"><i class="fa-solid fa-xmark"
                         style="color: #DC2626; font-size: 40px;"></i></button>
             </div>
