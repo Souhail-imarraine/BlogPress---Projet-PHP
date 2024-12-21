@@ -39,25 +39,32 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['like'])){
 
 // commentaire 
 
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment'])){
-
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment_btn'])) {
     $comment = htmlspecialchars(trim($_POST['content']));
     $username = htmlspecialchars(trim($_POST['username']));
     $email = htmlspecialchars(trim($_POST['email']));
 
-   
+        try {
+            $queryUser = "INSERT INTO users (username, email) VALUES (?, ?)";
+            $stmt = $pdo->prepare($queryUser);
+            $stmt->execute([$username, $email]);
 
-    $queryLikes = "INSERT INTO comments (content) VALUES (?) WHERE article_id = ?";
-    $stmt = $pdo->prepare($queryLikes);
-    $stmt->execute([$comment, $ArticleId]);
+            // hna jbna akhir id i seret f table sdyal users
+            $userId = $pdo->lastInsertId();
+
+           $queryComment = "INSERT INTO comments (article_id, user_id, content) VALUES (?, ?, ?)";
+            $stmt = $pdo->prepare($queryComment);
+            $stmt->execute([$ArticleId, $userId, $comment]);
 
 
-    // $queryLikes = "INSERT INTO users WHERE id = ?";
-    // $stmt = $pdo->prepare($queryLikes);
-    // $stmt->execute([$ArticleId]);
+            header('Location: ' . $_SERVER['PHP_SELF']."?BlogId=".$ArticleId);
+            exit();
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            echo 'Failed to insert data: ' . $e->getMessage();
+        }
+}
 
-    // header('Location: '. $_SERVER['PHP_SELF']);
-};
 
 
 ?>
@@ -118,9 +125,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment'])){
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 placeholder="Enter your email" name="email">
                              </div>
-                        <textarea id="comment-input" rows="3" placeholder="Write your comment..."
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none" name="content"></textarea>
-                        <button type="submit" id="submit-comment" name="comment" class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                        <textarea id="comment-input" rows="3" placeholder="Write your comment..." 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none" name="content"></textarea>
+                        <button type="submit" id="submit-comment" name="comment_btn" class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
                             Post Comment
                         </button>
                     </div>
