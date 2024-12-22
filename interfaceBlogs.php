@@ -93,18 +93,22 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
         $datainfo = $stmt->fetchAll(PDO:: FETCH_ASSOC);
     }
 
+
     // filter with categorie 
-    $categorie = isset($_GET['category']) ? $_GET['category'] : 'all';
-    if($categorie == 'all'){
-        $query = "SELECT * FROM articles";
-        $stmtca = $pdo->prepare($query);
-        $stmtca->execute();
-        $datainfo = $stmtca->fetchAll(PDO:: FETCH_ASSOC);
-    }else {
-        $query = "SELECT * FROM articles WHERE categorie = ? order by id";
-        $stmtca = $pdo->prepare($query);
-        $stmtca->execute([$categorie]);
-        $datainfo = $stmtca->fetchAll(PDO:: FETCH_ASSOC);
+
+    if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['category'])){
+        $categorie = isset($_GET['category']) ? $_GET['category'] : 'all';
+        if($categorie == 'all'){
+            $query = "SELECT * FROM articles";
+            $stmtca = $pdo->prepare($query);
+            $stmtca->execute();
+            $datainfo = $stmtca->fetchAll(PDO:: FETCH_ASSOC);
+        }else {
+            $query = "SELECT * FROM articles WHERE categorie = ? order by id";
+            $stmtca = $pdo->prepare($query);
+            $stmtca->execute([$categorie]);
+            $datainfo = $stmtca->fetchAll(PDO:: FETCH_ASSOC);
+        }
     }
 
 ?>
@@ -170,13 +174,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
         </div>
 
         <div class="flex gap-4 text-gray-400 border-b pb-3 mb-6 overflow-x-auto">
-            <a href="?category=all" class="text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-2">All</a>
-            <a href="?category=technology" class="hover:text-indigo-600 cursor-pointer">technology</a>
-            <a href="?category=health" class="hover:text-indigo-600 cursor-pointer">health</a>
-            <a href="?category=lifestyle" class="hover:text-indigo-600 cursor-pointer">lifestyle</a>
-            <a href="?category=education" class="hover:text-indigo-600 cursor-pointer">education</a>
+            <form action="" method="get" class="flex gap-4">
+                <a href="?category=all" class="text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-2">All</a>
+                <a href="?category=technology" class="hover:text-indigo-600">Technology</a>
+                <a href="?category=health" class="hover:text-indigo-600">Health</a>
+                <a href="?category=lifestyle" class="hover:text-indigo-600">Lifestyle</a>
+                <a href="?category=education" class="hover:text-indigo-600">Education</a>
+            </form>
         </div>
-
 
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="w-full lg:w-2/3 space-y-6">
@@ -199,7 +204,6 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
                         </div>
                         <div class="flex items-center gap-4 mt-2 text-gray-400">
                             <span> <?php echo $data['likes']; ?> ❤️</span>
-                            <span>21 💬</span>
                             <div id="view-counter" class="flex items-center mr-4">
                                 <span class="ml-1">Views: <span id="views"><?php echo $data['views'];?></span></span>
                             </div>

@@ -145,7 +145,7 @@ ALTER TABLE `users`
 --
 ALTER TABLE `articles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
+  
 --
 -- AUTO_INCREMENT pour la table `comments`
 --
