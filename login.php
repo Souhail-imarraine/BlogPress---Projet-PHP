@@ -96,11 +96,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["signin"])) {
     </header>
 
     <div class="font-[sans-serif] bg-white md:h-screen">
-        <div class="grid md:grid-cols-2 items-center gap-8 h-full">
-            <div class="max-md:order-1 p-4">
-                <img src="https://readymadeui.com/signin-image.webp"
-                    class="lg:max-w-[85%] w-full h-full object-contain block mx-auto" alt="login-image" />
+        <div class="grid md:grid-cols-2 items-center h-full">
+            <div class="w-full h-full">
+                <img src="img/technology-communication-icons-symbols-concept.jpg" class="w-full h-full object-cover"
+                    alt="login-image" />
             </div>
+
 
             <div class="flex items-center md:p-8 p-6 bg-[#0C172C] h-full lg:w-11/12 lg:ml-auto">
                 <form method="post" action="" class="max-w-lg w-full mx-auto">

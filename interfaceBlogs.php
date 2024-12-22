@@ -73,12 +73,25 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
     }
 
     // trending blogs 
-
     $queryTrend = "SELECT * FROM articles ORDER BY views desc LIMIT 3";
     $stTrent = $pdo->prepare($queryTrend);
     $stTrent->execute();
-
     $trendBlogs = $stTrent->fetchAll(PDO:: FETCH_ASSOC);
+
+    
+    // searching
+    if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['searching'])){
+        $valueInput = '%'.$_GET['search'].'%';
+        $querySearch = "SELECT * FROM articles WHERE title LIKE ? OR content LIKE ?";
+        $stmt = $pdo->prepare($querySearch);
+        $stmt->execute([$valueInput, $valueInput]);
+        $datainfo = $stmt->fetchAll(PDO:: FETCH_ASSOC);
+    }else {
+        $querySearch = "SELECT * FROM articles";
+        $stmt = $pdo->prepare($querySearch);
+        $stmt->execute();
+        $datainfo = $stmt->fetchAll(PDO:: FETCH_ASSOC);
+    }
 ?>
 
 
@@ -131,9 +144,14 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
 
     <div class="max-w-7xl mx-auto p-4 md:p-6">
 
-        <div class="relative mb-6">
-            <input type="text" placeholder="Search article..."
-                class="w-full py-3 px-5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none" />
+        <div class="relative mb-6 w-full max-w-md">
+            <form action="" method="get" class="flex items-center bg-white rounded-lg shadow-md overflow-hidden">
+                <input type="text" placeholder="Search article..." name="search"
+                    class="w-4/5 py-3 px-5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                <button type="submit" name="searching"
+                    class="w-1/5 bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 focus:outline-none focus:shadow-outline">Search
+                </button>
+            </form>
         </div>
 
         <div class="flex gap-4 text-gray-400 border-b pb-3 mb-6 overflow-x-auto">
@@ -186,16 +204,17 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
 
                     <?php foreach($trendBlogs as $query): ?>
                     <div class="flex gap-4 items-start">
-                        <img src="blogs.jpg" alt="Trending Image"
-                            class="w-16 h-16 object-cover rounded-lg" />
+                        <img src="blogs.jpg" alt="Trending Image" class="w-16 h-16 object-cover rounded-lg" />
                         <div>
                             <h3 class="font-semibold text-white text-sm">
                                 <?php echo $query['title'] ?>
                             </h3>
                             <div class="flex items-center text-xs gap-2 text-gray-500">
                                 <span> <?php echo $query['views'] ?> vue</span>
-                                <span class="bg-purple-100 text-purple-600 px-2 py-0.5 rounded"><?php echo $query['categorie'] ?></span>
-                                <span class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded"><?php echo $query['tags'] ?></span>
+                                <span
+                                    class="bg-purple-100 text-purple-600 px-2 py-0.5 rounded"><?php echo $query['categorie'] ?></span>
+                                <span
+                                    class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded"><?php echo $query['tags'] ?></span>
                             </div>
                         </div>
                     </div>

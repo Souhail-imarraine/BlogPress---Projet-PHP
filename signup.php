@@ -114,9 +114,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
     </header>
     <div class="font-[sans-serif] bg-white md:h-screen">
         <div class="grid md:grid-cols-2 items-center gap-8 h-full">
-            <div class="max-md:order-1 p-4">
-                <img src="https://readymadeui.com/signin-image.webp"
-                    class="lg:max-w-[85%] w-full h-full object-contain block mx-auto" alt="login-image" />
+            <div class="w-full h-full">
+                <img src="img/technology-communication-icons-symbols-concept.jpg" class="w-full h-full object-cover"
+                    alt="login-image" />
             </div>
 
             <div class="flex items-center md:p-8 p-6 bg-[#0C172C] h-full lg:w-11/12 lg:ml-auto">
@@ -136,7 +136,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['btn_signup'])) {
                             <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb"
                                 class="w-[18px] h-[18px] absolute right-2" viewBox="0 0 24 24">
                                 <circle cx="10" cy="7" r="6" data-original="#000000"></circle>
-                                <path d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z" data-original="#000000"></path>
+                                <path
+                                    d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+                                    data-original="#000000"></path>
                             </svg>
                         </div>
                     </div>
