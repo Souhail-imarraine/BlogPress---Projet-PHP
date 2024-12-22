@@ -61,7 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
             $query = "INSERT INTO articles(title, content, author_id, views, likes, tags, categorie) VALUES (?,?,?,?,?,?,?)";
             $stmt = $pdo->prepare($query); 
             $stmt->execute([$title, $content, $user_id, $views, $likes, $tags, $categorie]);
-            header("Location: " . $_SERVER['PHP_SELF']); 
+
+            $_SESSION['success_message'] = "Blog added successfully!";
+            header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         } catch (PDOException $e) 
         { 
@@ -204,6 +206,7 @@ try{
                 <h2 class="text-xl sm:text-2xl font-semibold text-indigo-600 dark:text-indigo-400 mb-6">Statistics and
                     Performance</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
                     <!-- Article Stats -->
                     <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm">
                         <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Article Views</h3>
@@ -217,6 +220,7 @@ try{
                             <?php echo $result['total_likes'] ?>
                         </p>
                     </div>
+
                     <!-- Comments Stats -->
                     <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-sm">
                         <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Comments Count</h3>
@@ -225,24 +229,20 @@ try{
                         </p>
                     </div>
                 </div>
-
+                
                 <!-- Graph Placeholder -->
                 <div class="mt-8">
-                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Article Performance Graph
-                    </h3>
+                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Article Performance Graph</h3>
                     <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm">
-                        <p class="text-center text-gray-500 dark:text-gray-400"></p>
-
-                        <body>
-                            <div style="width: 50%; margin: auto;">
-                                <canvas id="myChart"></canvas>
+                        <p class="text-center text-gray-500 dark:text-gray-400 mb-4">Performance of articles based on
+                            views, likes, and comments</p>
+                        <div class="w-full max-w-4xl mx-auto h-full">
+                             <canvas id="myChart"></canvas> 
                             </div>
-                        </body>
-
                     </div>
                 </div>
             </section>
-            
+
             <!-- Blog Management -->
             <section class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                 <div class="flex items-center justify-center">
