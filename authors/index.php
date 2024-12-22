@@ -91,24 +91,39 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])){
 
 try{
 
-    $query = "SELECT us.id AS user_id, us.username, SUM(a.views) AS total_views, SUM(a.likes) AS total_likes, COUNT(c.id) AS total_comments 
-    FROM users us 
-    INNER JOIN articles a 
-    ON us.id = a.author_id 
-    LEFT JOIN comments c 
-    ON a.id = c.article_id 
-    GROUP BY us.id, us.username";
+    $query = "SELECT 
+                u.id AS user_id,
+                u.username,
+                COUNT(c.id) AS total_comments,
+                SUM(a.views) AS total_views,
+                SUM(a.likes) AS total_likes
+            FROM 
+                users u
+            LEFT JOIN 
+                articles a ON u.id = a.author_id
+            LEFT JOIN 
+                comments c ON a.id = c.article_id
+            WHERE 
+                u.id = ?
+            GROUP BY 
+                u.id, u.username;";
 
     $st = $pdo->prepare($query);
-    $st->execute(); 
+    $st->execute([$user_id]);
     $statusinfo = $st->fetchAll(PDO::FETCH_ASSOC);
-    
+
     // dkhlna l'index dyal lassociative array bach n9dro nwslo les information bla mn foreachiw ;
     if(!empty($statusinfo)){
         $result = $statusinfo[0];
     }else {
         echo "no found status";
     }
+
+    $labels[] = $result['username'];
+    $views[] = $result['total_views'];
+    $likes[] = $result['total_likes'];
+    $comments[] = $result['total_comments'];
+
 
 
 }catch(PDOException $e){
@@ -217,6 +232,7 @@ try{
                     </h3>
                     <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm">
                         <p class="text-center text-gray-500 dark:text-gray-400"></p>
+
                         <body>
                             <div style="width: 50%; margin: auto;">
                                 <canvas id="myChart"></canvas>
@@ -226,7 +242,7 @@ try{
                     </div>
                 </div>
             </section>
-
+            
             <!-- Blog Management -->
             <section class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
                 <div class="flex items-center justify-center">
@@ -353,37 +369,41 @@ try{
     </div>
 
 
+
     <script>
+    var labels = <?php echo json_encode($labels); ?>;
+    var views = <?php echo json_encode($views); ?>;
+    var likes = <?php echo json_encode($likes); ?>;
+    var comments = <?php echo json_encode($comments); ?>;
+
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: labels,
             datasets: [{
-                label: 'My First Dataset',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 99, 132, 1)'
-                ],
+                label: 'Total Views',
+                data: views,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Total Likes',
+                data: likes,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Total Comments',
+                data: comments,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true
@@ -391,7 +411,7 @@ try{
             }
         }
     });
-</script>
+    </script>
 
 </body>
 

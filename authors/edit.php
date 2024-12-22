@@ -1,6 +1,6 @@
 <?php
 require '../connection.php';
-// session_start();
+session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'author') {
     header('Location: ../login.php');
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
     $content = htmlspecialchars(trim($_POST['content']));
     $tags = htmlspecialchars(trim($_POST['tags']));
     $categorie = htmlspecialchars(trim($_POST['category']));
-    $author_id = $_SESSION['user_id']; 
+    $author_id = $_SESSION['user_id'];
     $views = 0;
     $likes = 0;
 
@@ -91,50 +91,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["create_blog"])) {
     <title>Edit Blog</title>
 </head>
 
-<body>
-    <div class="inset-0 flex items-center justify-center p-4 dark:bg-gray-900 font-sans containerCreateBlog">
-        <div class="w-full max-w-3xl mx-auto dark:bg-gray-700 text-gray-900 dark:text-gray-200 font-sans p-8 rounded-lg shadow-lg">
-            <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-white mb-6">Edit Blog</h1>
-                <button class="cancel"><i class="fa-solid fa-xmark"
-                        style="color: #DC2626; font-size: 40px;"></i></button>
+<body class="bg-gray-900 font-sans">
+    <div class="inset-0 flex items-center justify-center p-4 containerCreateBlog">
+        <div class="w-full max-w-3xl mx-auto bg-gray-700 text-gray-200 p-8 rounded-lg shadow-lg">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold text-white">Edit Blog</h1> <button class="cancel"><i
+                        class="fa-solid fa-xmark text-red-600 text-2xl"></i></button>
             </div>
             <form action="" method="post">
                 <!-- Title -->
                 <?php include 'error.php' ?>
-
                 <div class="mb-4">
-                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-                    <input type="text" id="title" name="title"
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    <label for="title" class="block text-sm font-medium text-gray-300">Title</label> <input type="text"
+                        id="title" name="title"
+                        class="mt-1 block w-full p-2 border border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                         placeholder="Enter blog title" value="<?php echo htmlspecialchars($title); ?>" required>
                 </div>
                 <!-- Content -->
                 <div class="mb-4">
-                    <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                    <label for="content" class="block text-sm font-medium text-gray-300">Content</label>
                     <textarea id="content" name="content" rows="6"
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-gray-900"
-                        placeholder="Write your blog content here"
-                        required><?php echo htmlspecialchars($content); ?></textarea>
-                </div>
+                        class="mt-1 block w-full p-2 border border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                        placeholder="Write your blog content here" required><?php echo htmlspecialchars($content); ?>
+                    </textarea>
+                </div> 
                 <!-- Tags -->
                 <div class="mb-4">
-                    <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
+                    <label for="tags" class="block text-sm font-medium text-gray-300">Tags</label>
                     <input type="text" id="tags" name="tags"
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                        class="mt-1 block w-full p-2 border border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                         placeholder="e.g., technology, coding, design" value="<?php echo htmlspecialchars($tags); ?>"
                         required>
                 </div>
                 <!-- Category -->
                 <div class="mb-4">
-                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <label for="category" class="block text-sm font-medium text-gray-300">Category</label>
                     <select id="category" name="category"
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                        class="mt-1 block w-full p-2 border border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                         required>
                         <option value="">Select a category</option>
                         <option value="technology" <?php echo ($category == 'technology') ? 'selected' : ''; ?>>
-                            Technology
-                        </option>
+                            Technology </option>
                         <option value="lifestyle" <?php echo ($category == 'lifestyle') ? 'selected' : ''; ?>>Lifestyle
                         </option>
                         <option value="education" <?php echo ($category == 'education') ? 'selected' : ''; ?>>Education
