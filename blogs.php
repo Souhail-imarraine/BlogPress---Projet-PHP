@@ -41,7 +41,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['like'])){
  * ******** commentaire ******************
  * *************************************/ 
 
-
 // afficher le commentaire.
 
 $afficheQuery = "SELECT * FROM comments Where article_id = ? ";
@@ -59,9 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment_btn'])) {
 
     if (empty($comment) || empty($username) || empty($email)) {
         array_push($errors, "All fields are required");
-    } elseif (!ctype_alpha($username)){
-        array_push($errors, "Username must contain only alphabetic characters");
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)){
+    }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)){
      array_push($errors, "Invalid email format"); 
     }
 
@@ -78,8 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment_btn'])) {
                $queryComment = "INSERT INTO comments (article_id, user_id, content) VALUES (?, ?, ?)";
                 $stmt = $pdo->prepare($queryComment);
                 $stmt->execute([$ArticleId, $userId, $comment]);
-    
-    
+
                 header('Location: ' . $_SERVER['PHP_SELF']."?BlogId=".$ArticleId);
                 exit();
             } catch (Exception $e) {
@@ -192,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['comment_btn'])) {
                 </div>
 
                 <section>
-                    <h3 class="text-xl font-semibold mb-4">Comments</h3>
+                    <h3 class="text-xl text-white font-semibold mb-4">Comments</h3>
 
                     <form action="" method="post">
                         <div class="mb-6">
