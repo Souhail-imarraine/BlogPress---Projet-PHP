@@ -1,11 +1,18 @@
 <?php
 require '../connection.php';
-session_start();
+// session_start();
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'author') {
+    header('Location: ../login.php');
+}
 
 // 39el 3liha
 if (!isset($_GET['ArticleId']) || empty($_GET['ArticleId'])) {
     die('missing id parameter');
 }
+
+
+
 
 $ArticleId = $_GET['ArticleId'];
 
