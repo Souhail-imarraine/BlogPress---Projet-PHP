@@ -78,7 +78,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
     $stTrent->execute();
     $trendBlogs = $stTrent->fetchAll(PDO:: FETCH_ASSOC);
 
-    
+
     // searching
     if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['searching'])){
         $valueInput = '%'.$_GET['search'].'%';
@@ -92,6 +92,21 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
         $stmt->execute();
         $datainfo = $stmt->fetchAll(PDO:: FETCH_ASSOC);
     }
+
+    // filter with categorie 
+    $categorie = isset($_GET['category']) ? $_GET['category'] : 'all';
+    if($categorie == 'all'){
+        $query = "SELECT * FROM articles";
+        $stmtca = $pdo->prepare($query);
+        $stmtca->execute();
+        $datainfo = $stmtca->fetchAll(PDO:: FETCH_ASSOC);
+    }else {
+        $query = "SELECT * FROM articles WHERE categorie = ? order by id";
+        $stmtca = $pdo->prepare($query);
+        $stmtca->execute([$categorie]);
+        $datainfo = $stmtca->fetchAll(PDO:: FETCH_ASSOC);
+    }
+
 ?>
 
 
@@ -155,12 +170,13 @@ if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["btn_clique"])){
         </div>
 
         <div class="flex gap-4 text-gray-400 border-b pb-3 mb-6 overflow-x-auto">
-            <span class="text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-2">All</span>
-            <span class="hover:text-indigo-600 cursor-pointer">Technology</span>
-            <span class="hover:text-indigo-600 cursor-pointer">Environment</span>
-            <span class="hover:text-indigo-600 cursor-pointer">Business</span>
-            <span class="hover:text-indigo-600 cursor-pointer">Politics</span>
+            <a href="?category=all" class="text-indigo-600 font-semibold border-b-2 border-indigo-600 pb-2">All</a>
+            <a href="?category=technology" class="hover:text-indigo-600 cursor-pointer">technology</a>
+            <a href="?category=health" class="hover:text-indigo-600 cursor-pointer">health</a>
+            <a href="?category=lifestyle" class="hover:text-indigo-600 cursor-pointer">lifestyle</a>
+            <a href="?category=education" class="hover:text-indigo-600 cursor-pointer">education</a>
         </div>
+
 
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="w-full lg:w-2/3 space-y-6">
